@@ -2,19 +2,33 @@ import pandas as pd
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
+import json
+from scipy.stats import spearmanr, kendalltau
+import heapq
+
+SHOW_PLOTS = False
 
 transformations = [ lambda x: x, lambda x: x**2, lambda x: np.sqrt(np.abs(x)), lambda x: np.log(np.abs(x) + 1e-10), 
-                    lambda x: np.log10(np.abs(x) + 1e-10), lambda x: np.exp(x), lambda x: 1/x, lambda x: np.sin(x), lambda x: np.cos(x), 
-                    lambda x: np.tan(x), lambda x: np.arcsin(x), lambda x: x + x**2, lambda x: x + x**2 + x**3, lambda x: x**3, 
-                    lambda x: x**4, lambda x: x**5, lambda x: 2**x ]
+                    lambda x: np.log10(np.abs(x) + 1e-10), lambda x: np.exp(x), lambda x: 1.0 / x, lambda x: np.sin(x), lambda x: np.cos(x), 
+                    lambda x: np.tan(x), lambda x: np.arcsin(np.tanh(x)), lambda x: np.arccos(np.tanh(x)), lambda x: np.arctan(x), 
+                    lambda x: np.tanh(x), lambda x: 1.0 / (1.0 + np.exp(-x)), lambda x: 2**x, lambda x: x + x**2, lambda x: x + x**2 + x**3, 
+                    lambda x: x**3, lambda x: x**4, lambda x: x**5, lambda x: x**6, lambda x: x**7, lambda x: x**8, lambda x: x**9, 
+                    lambda x: x**10 ]
 
 transformation_names = [ "identity", "square", "square root of the absolute value", "natural logarithm of the absolute value", 
                          "base 10 logarithm of the absolute value", "exponential", "reciprocal", "sine", "cosine", "tangent", 
-                         "arcsine", "x + x^2", "x + x^2 + x^3", "x^3", "x^4", "2^x" ]
+                         "arcus sine of the hyperbolic tangent", "arcus cosine of the hyperbolic tangent", "arcus tangent", 
+                         "hyperbolic tangent", "logistic sigmoid", "2^x", "x + x^2", "x + x^2 + x^3", "x^3", "x^4", "x^5", "x^6", 
+                         "x^7", "x^8", "x^9", "x^10" ]
 
-data_df = pd.read_csv('correlation-dataset.csv')
+if len(transformations) != len(transformation_names):
+    raise ValueError("The number of transformations and transformation names must be the same.")
+
+data_df = pd.read_csv("correlation-dataset.csv")
+best_correlations = {}
 
 for transformation, name in zip(transformations, transformation_names):
+    print(f"Processing '{name}' transformation: {transformation(4)} ...")
     transformed_data_df = data_df.apply(transformation)
 
     # combine the two data frames horizontally
@@ -31,14 +45,34 @@ for transformation, name in zip(transformations, transformation_names):
     top_pairs_dict = {}
     count = 0
     for idx, value in sorted_corr.items():
-        sorted_key = tuple(sorted(idx))
+        sorted_key_asc = tuple(sorted(idx))
+        sorted_key_desc = tuple(sorted(idx, reverse=True))
         key = tuple(idx)
-        if sorted_key not in top_pairs_dict and key not in top_pairs_dict:
+        
+        if sorted_key_asc not in top_pairs_dict and sorted_key_desc not in top_pairs_dict:
             top_pairs_dict[key] = value
             count += 1
+        elif sorted_key_asc in top_pairs_dict:
+            last_value = top_pairs_dict[sorted_key_asc]
+            if abs(value) > abs(last_value):
+                del top_pairs_dict[sorted_key_asc]
+                top_pairs_dict[key] = value
+        elif sorted_key_desc in top_pairs_dict:
+            last_value = top_pairs_dict[sorted_key_desc]
+            if abs(value) > abs(last_value):
+                del top_pairs_dict[sorted_key_desc]
+                top_pairs_dict[key] = value
+
+        if key in best_correlations:
+            last_name, last_value = best_correlations[key]
+            if abs(value) > abs(last_value):
+                best_correlations[key] = (name, value)
+        elif abs(value) > 0.5:
+            best_correlations[key] = (name, value)
+        
         if count >= 10:
             break
-
+    
     columns = []
     rows = []
     for key in top_pairs_dict:
@@ -49,9 +83,41 @@ for transformation, name in zip(transformations, transformation_names):
 
     top_pairs_df = corr_mat_selected_df.loc[rows, columns]
 
-    plt.figure(figsize=(12, 12))
+    plt.figure(figsize=(8, 8))
     sns.heatmap(top_pairs_df, annot=True, cmap='coolwarm', center=0, vmin=-1, vmax=1, xticklabels=columns, yticklabels=rows, square=False)
     plt.title(f"Original and transformed data with {name} function")
-    plt.show()
+    plt.tight_layout()
+    plt.savefig(f"correlation/{name.replace(' ', '_')}", dpi=500)
+    if SHOW_PLOTS:
+        plt.show()
+    plt.close()
 
-exit()
+non_linear_correlations = [ spearmanr, kendalltau ]
+non_linear_correlation_names = [ "Spearman", "Kendall" ]
+
+for non_linear_correlation, non_linear_correlation_name in zip(non_linear_correlations, non_linear_correlation_names):
+    print(f"Processing '{non_linear_correlation_name}' correlation ...")
+
+    results = []
+    for col1 in data_df.columns:
+        for col2 in data_df.columns:
+            if col1 != col2:
+                correlation, _ = non_linear_correlation(data_df[col1], data_df[col2])
+                results.append((abs(correlation), (col1, col2), correlation))
+
+    top_10_pairs = heapq.nlargest(10, results, key=lambda x: x[0])
+
+    for abs_correlation, key, correlation in top_10_pairs:
+        if key in best_correlations:
+            last_name, last_value = best_correlations[key]
+            if abs_correlation > abs(last_value):
+                best_correlations[key] = (non_linear_correlation_name, correlation)
+        elif abs_correlation > 0.5:
+            best_correlations[key] = (non_linear_correlation_name, correlation)
+
+best_correlations_string_keys = {}
+for key in best_correlations:
+    best_correlations_string_keys['_'.join(key)] = best_correlations[key]
+
+with open('correlation/best_correlations.json', 'w') as f:
+    json.dump(best_correlations_string_keys, f, indent=4)

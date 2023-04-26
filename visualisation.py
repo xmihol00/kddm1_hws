@@ -66,7 +66,7 @@ axes[1].set_ylabel("Second Principal Component")
 axes[1].legend()
 
 plt.subplots_adjust(left=0.05, bottom=0.09, right=0.98, top=0.95)
-plt.savefig("visualisation_pca_2D_subplots.png", dpi=500)
+plt.savefig("visualisation/pca_2D_subplots.png", dpi=500)
 plt.show()
 
 # apply PCA, reduce to 3 dimensions
@@ -89,7 +89,7 @@ axes[1].set_zlabel("Third Principal Component")
 axes[1].legend()
 
 plt.subplots_adjust(left=0.0, bottom=0.02, right=0.96, top=0.96, wspace=0.1)
-plt.savefig("visualisation_pca_3D_subplots.png", dpi=500)
+plt.savefig("visualisation/pca_3D_subplots.png", dpi=500)
 plt.show()
 
 # apply LDA, reduce to 1 dimension
@@ -112,7 +112,7 @@ axes[1].set_ylim(-0.2, 0.2)
 axes[1].legend()
 
 plt.subplots_adjust(left=0.05, bottom=0.12, right=0.95, top=0.91)
-plt.savefig("visualisation_lda_1D_subplots.png", dpi=500)
+plt.savefig("visualisation/lda_1D_subplots.png", dpi=500)
 plt.show()
 
 # calculate correlation matrix
@@ -151,7 +151,7 @@ correlation_matrix_df = correlation_matrix_df.round(2)
 plt.figure(figsize=(17, 11))
 sns.heatmap(correlation_matrix_df, annot=True, cmap="coolwarm", vmin=-1, vmax=1, linewidths=.5, cbar_kws={"shrink": .5}, annot_kws={"size": 9})
 plt.tight_layout()
-plt.savefig("visualisation_correlation_heatmap.png", dpi=500)
+plt.savefig("visualisation/correlation_heatmap.png", dpi=500)
 plt.show()
 
 # convert the categorical columns to numerical codes
@@ -197,7 +197,7 @@ axes[1].set_zlabel(top_3_columns[2])
 axes[1].legend()
 
 plt.subplots_adjust(left=0.0, bottom=0.1, right=0.96, top=0.96, wspace=0.1)
-plt.savefig("visualisation_feature_importance_3D_subplots.png", dpi=500)
+plt.savefig("visualisation/feature_importance_3D_subplots.png", dpi=500)
 plt.show()
 
 # normalize continuous columns except "StandardHours", which is all 80
@@ -245,5 +245,5 @@ for i in range(plot_index, len(axes)):
 
 # adjust spacing between subplots to avoid overlapping
 plt.subplots_adjust(left=0.05, bottom=0.02, right=0.99, top=0.98, wspace=0.25, hspace=0.3)
-plt.savefig("visualisation_bar_plots.png", dpi=500)
+plt.savefig("visualisation/bar_plots.png", dpi=500)
 plt.show()
