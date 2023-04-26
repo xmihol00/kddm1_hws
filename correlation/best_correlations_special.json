@@ -1,0 +1,42 @@
+{
+    "Paul_Marie": [
+        "Spearman",
+        0.9336707016707019
+    ],
+    "Marie_Paul": [
+        "Spearman",
+        0.9336707016707019
+    ],
+    "Laura_David": [
+        "Spearman",
+        0.8294387894387895
+    ],
+    "David_Laura": [
+        "Spearman",
+        0.8294387894387895
+    ],
+    "Jakob_Maximilian": [
+        "Spearman",
+        0.8283726405859914
+    ],
+    "Maximilian_Jakob": [
+        "Spearman",
+        0.8283726405859914
+    ],
+    "Jakob_Anna": [
+        "Spearman",
+        0.8231135262387514
+    ],
+    "Anna_Jakob": [
+        "Spearman",
+        0.8231135262387514
+    ],
+    "Elias_Lena": [
+        "Spearman",
+        0.7767998811302809
+    ],
+    "Lena_Elias": [
+        "Spearman",
+        0.7767998811302808
+    ]
+}

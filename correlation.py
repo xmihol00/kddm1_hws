@@ -5,6 +5,9 @@ import matplotlib.pyplot as plt
 import json
 from scipy.stats import spearmanr, kendalltau
 import heapq
+import dcor
+from sklearn.cross_decomposition import CCA
+from minepy import MINE
 
 SHOW_PLOTS = False
 
@@ -17,7 +20,7 @@ transformations = [ lambda x: x, lambda x: x**2, lambda x: np.sqrt(np.abs(x)), l
 
 transformation_names = [ "identity", "square", "square root of the absolute value", "natural logarithm of the absolute value", 
                          "base 10 logarithm of the absolute value", "exponential", "reciprocal", "sine", "cosine", "tangent", 
-                         "arcus sine of the hyperbolic tangent", "arcus cosine of the hyperbolic tangent", "arcus tangent", 
+                         "arkus sine of the hyperbolic tangent", "arkus cosine of the hyperbolic tangent", "arkus tangent", 
                          "hyperbolic tangent", "logistic sigmoid", "2^x", "x + x^2", "x + x^2 + x^3", "x^3", "x^4", "x^5", "x^6", 
                          "x^7", "x^8", "x^9", "x^10" ]
 
@@ -25,6 +28,7 @@ if len(transformations) != len(transformation_names):
     raise ValueError("The number of transformations and transformation names must be the same.")
 
 data_df = pd.read_csv("correlation-dataset.csv")
+best_names = []
 best_correlations = {}
 
 for transformation, name in zip(transformations, transformation_names):
@@ -48,20 +52,10 @@ for transformation, name in zip(transformations, transformation_names):
         sorted_key_asc = tuple(sorted(idx))
         sorted_key_desc = tuple(sorted(idx, reverse=True))
         key = tuple(idx)
-        
+        # check if the same pair is already in the dictionary, if so, it already has the higher correlation, otherwise, insert it
         if sorted_key_asc not in top_pairs_dict and sorted_key_desc not in top_pairs_dict:
             top_pairs_dict[key] = value
             count += 1
-        elif sorted_key_asc in top_pairs_dict:
-            last_value = top_pairs_dict[sorted_key_asc]
-            if abs(value) > abs(last_value):
-                del top_pairs_dict[sorted_key_asc]
-                top_pairs_dict[key] = value
-        elif sorted_key_desc in top_pairs_dict:
-            last_value = top_pairs_dict[sorted_key_desc]
-            if abs(value) > abs(last_value):
-                del top_pairs_dict[sorted_key_desc]
-                top_pairs_dict[key] = value
 
         if key in best_correlations:
             last_name, last_value = best_correlations[key]
@@ -92,9 +86,20 @@ for transformation, name in zip(transformations, transformation_names):
         plt.show()
     plt.close()
 
+best_correlations_string_keys = {}
+for key in best_correlations:
+    best_names.append(key[0])
+    best_names.append(key[1])
+    best_correlations_string_keys['_'.join(key)] = best_correlations[key]
+
+with open("correlation/best_corr_transformations.json", 'w') as f:
+    json.dump(best_correlations_string_keys, f, indent=4)
+
+
 non_linear_correlations = [ spearmanr, kendalltau ]
 non_linear_correlation_names = [ "Spearman", "Kendall" ]
 
+best_correlations = {}
 for non_linear_correlation, non_linear_correlation_name in zip(non_linear_correlations, non_linear_correlation_names):
     print(f"Processing '{non_linear_correlation_name}' correlation ...")
 
@@ -117,7 +122,73 @@ for non_linear_correlation, non_linear_correlation_name in zip(non_linear_correl
 
 best_correlations_string_keys = {}
 for key in best_correlations:
+    best_names.append(key[0])
+    best_names.append(key[1])
     best_correlations_string_keys['_'.join(key)] = best_correlations[key]
 
-with open('correlation/best_correlations.json', 'w') as f:
+with open("correlation/best_corr_spearman_kendall.json", 'w') as f:
+    json.dump(best_correlations_string_keys, f, indent=4)
+
+non_linear_correlations = [ lambda x, y: CCA(n_components=1).fit(x.reshape(-1, 1), y.reshape(-1, 1)).score(x.reshape(-1, 1), y.reshape(-1, 1)), 
+                            dcor.distance_correlation ]
+non_linear_correlation_names = [ "Canonical correlation", "Distance correlation" ]
+
+best_correlations = {}
+for non_linear_correlation, non_linear_correlation_name in zip(non_linear_correlations, non_linear_correlation_names):
+    print(f"Processing '{non_linear_correlation_name}' correlation ...")
+
+    results = []
+    for col1 in data_df.columns:
+        for col2 in data_df.columns:
+            if col1 != col2:
+                x = data_df[col1].to_numpy().astype(np.float64)
+                y = data_df[col2].to_numpy().astype(np.float64)
+                correlation = non_linear_correlation(x, y)
+                results.append((abs(correlation), (col1, col2), correlation))
+
+    top_10_pairs = heapq.nlargest(10, results, key=lambda x: x[0])
+
+    for abs_correlation, key, correlation in top_10_pairs:
+        if key in best_correlations:
+            last_name, last_value = best_correlations[key]
+            if abs_correlation > abs(last_value):
+                best_correlations[key] = (non_linear_correlation_name, correlation)
+        elif abs_correlation > 0.5:
+            best_correlations[key] = (non_linear_correlation_name, correlation)
+
+for key in best_correlations:
+    best_names.append(key[0])
+    best_names.append(key[1])
+
+best_names = list(set(best_names))
+selected_data_df = data_df[best_names]
+non_linear_correlation_name = "Maximal Information Coefficient"
+print(f"Processing '{non_linear_correlation_name}' correlation on selected columns:\n{selected_data_df.columns}")
+
+results = []
+for col1 in selected_data_df.columns:
+    for col2 in selected_data_df.columns:
+        if col1 != col2:
+            x = selected_data_df[col1].to_numpy().astype(np.float64).reshape(-1, 1)
+            y = selected_data_df[col2].to_numpy().astype(np.float64).reshape(-1, 1)
+            mine = MINE()
+            mine.compute_score(x, y)
+            correlation = mine.mic()
+            results.append((abs(correlation), (col1, col2), correlation))
+
+top_10_pairs = heapq.nlargest(10, results, key=lambda x: x[0])
+
+for abs_correlation, key, correlation in top_10_pairs:
+    if key in best_correlations:
+        last_name, last_value = best_correlations[key]
+        if abs_correlation > abs(last_value):
+            best_correlations[key] = (non_linear_correlation_name, correlation)
+    elif abs_correlation > 0.5:
+        best_correlations[key] = (non_linear_correlation_name, correlation)
+
+best_correlations_string_keys = {}
+for key in best_correlations:
+    best_correlations_string_keys['_'.join(key)] = best_correlations[key]
+
+with open("correlation/best_corr_0_to_1.json", 'w') as f:
     json.dump(best_correlations_string_keys, f, indent=4)
