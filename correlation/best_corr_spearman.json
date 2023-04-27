@@ -3,15 +3,7 @@
         "Spearman",
         0.9336707016707019
     ],
-    "Marie_Paul": [
-        "Spearman",
-        0.9336707016707019
-    ],
     "Laura_David": [
-        "Spearman",
-        0.8294387894387895
-    ],
-    "David_Laura": [
         "Spearman",
         0.8294387894387895
     ],
@@ -19,15 +11,7 @@
         "Spearman",
         0.8283726405859914
     ],
-    "Maximilian_Jakob": [
-        "Spearman",
-        0.8283726405859914
-    ],
     "Jakob_Anna": [
-        "Spearman",
-        0.8231135262387514
-    ],
-    "Anna_Jakob": [
         "Spearman",
         0.8231135262387514
     ],
@@ -35,8 +19,24 @@
         "Spearman",
         0.7767998811302809
     ],
-    "Lena_Elias": [
+    "Maximilian_Anna": [
         "Spearman",
-        0.7767998811302808
+        0.6681090701133974
+    ],
+    "David_Felix": [
+        "Spearman",
+        0.5951352311352311
+    ],
+    "Maximilian_Emilia": [
+        "Spearman",
+        0.5050968746121652
+    ],
+    "Laura_Felix": [
+        "Spearman",
+        0.4863962703962704
+    ],
+    "Nathaniel_Terry": [
+        "Spearman",
+        0.16796439596439597
     ]
 }

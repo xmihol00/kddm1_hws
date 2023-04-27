@@ -120,14 +120,23 @@ if SPECIAL_CORRELATIONS:
                     correlation = non_linear_correlation(x, y)
                     results.append((abs(correlation), (col1, col2), correlation))
 
-        top_10_pairs = heapq.nlargest(10, results, key=lambda x: x[0])
+        top_20_pairs = heapq.nlargest(20, results, key=lambda x: x[0])
 
         best_correlations_string_keys = {}
-        for _, key, correlation in top_10_pairs:
-            best_names.append(key[0])
-            best_names.append(key[1])
-            best_pairs.append(key)
-            best_correlations_string_keys['_'.join(key)] = (non_linear_correlation_name, correlation)
+        for i in range(0, 20, 2):
+            j = i + 1
+            _, key1, correlation1 = top_20_pairs[i]
+            _, key2, correlation2 = top_20_pairs[j]
+            best_names.append(key1[0])
+            best_names.append(key1[1])
+            best_pairs.append(key1)
+
+            if key1 in best_correlations:
+                best_correlations_string_keys['_'.join(key1)] = (non_linear_correlation_name, correlation1)
+            elif key2 in best_correlations:
+                best_correlations_string_keys['_'.join(key2)] = (non_linear_correlation_name, correlation2)
+            else:
+                best_correlations_string_keys['_'.join(key1)] = (non_linear_correlation_name, correlation1)
 
         with open(f"correlation/best_corr_{non_linear_correlation_name.lower()}.json", 'w') as f:
             json.dump(best_correlations_string_keys, f, indent=4)
@@ -135,7 +144,7 @@ if SPECIAL_CORRELATIONS:
     best_names = list(set(best_names))
     selected_data_df = data_df[best_names]
     non_linear_correlation_name = "Maximal Information Coefficient"
-    print(f"Processing '{non_linear_correlation_name}' correlation on selected columns:\n{selected_data_df.columns}")
+    print(f"Processing '{non_linear_correlation_name}' correlation ...")
 
     results = []
     for col1 in selected_data_df.columns:
@@ -148,14 +157,23 @@ if SPECIAL_CORRELATIONS:
                 correlation = mine.mic()
                 results.append((abs(correlation), (col1, col2), correlation))
 
-    top_10_pairs = heapq.nlargest(10, results, key=lambda x: x[0])
+    top_20_pairs = heapq.nlargest(20, results, key=lambda x: x[0])
 
     best_correlations_string_keys = {}
-    for _, key, correlation in top_10_pairs:
-        best_names.append(key[0])
-        best_names.append(key[1])
-        best_pairs.append(key)
-        best_correlations_string_keys['_'.join(key)] = (non_linear_correlation_name, correlation)
+    for i in range(0, 20, 2):
+        j = i + 1
+        _, key1, correlation1 = top_20_pairs[i]
+        _, key2, correlation2 = top_20_pairs[j]
+        best_names.append(key1[0])
+        best_names.append(key1[1])
+        best_pairs.append(key1)
+
+        if key1 in best_correlations:
+            best_correlations_string_keys['_'.join(key1)] = (non_linear_correlation_name, correlation1)
+        elif key2 in best_correlations:
+            best_correlations_string_keys['_'.join(key2)] = (non_linear_correlation_name, correlation2)
+        else:
+            best_correlations_string_keys['_'.join(key1)] = (non_linear_correlation_name, correlation1)
 
     with open("correlation/best_corr_MIC.json", 'w') as f:
         json.dump(best_correlations_string_keys, f, indent=4)

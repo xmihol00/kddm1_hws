@@ -3,15 +3,7 @@
         "Kendall",
         0.7746546546546548
     ],
-    "Marie_Paul": [
-        "Kendall",
-        0.7746546546546548
-    ],
     "Jakob_Maximilian": [
-        "Kendall",
-        0.7124458051865367
-    ],
-    "Maximilian_Jakob": [
         "Kendall",
         0.7124458051865367
     ],
@@ -19,15 +11,7 @@
         "Kendall",
         0.7067796474862712
     ],
-    "Anna_Jakob": [
-        "Kendall",
-        0.7067796474862712
-    ],
     "Laura_David": [
-        "Kendall",
-        0.6971171171171171
-    ],
-    "David_Laura": [
         "Kendall",
         0.6971171171171171
     ],
@@ -35,8 +19,24 @@
         "Kendall",
         0.5973239212454656
     ],
-    "Lena_Elias": [
+    "Anna_Maximilian": [
         "Kendall",
-        0.5973239212454656
+        0.4894759654416521
+    ],
+    "Maximilian_Emilia": [
+        "Kendall",
+        0.4237661899563584
+    ],
+    "David_Felix": [
+        "Kendall",
+        0.41772972972972977
+    ],
+    "Laura_Felix": [
+        "Kendall",
+        0.3379179179179179
+    ],
+    "Nathaniel_Terry": [
+        "Kendall",
+        0.1130970970970971
     ]
 }

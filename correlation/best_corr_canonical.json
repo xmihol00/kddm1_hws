@@ -3,15 +3,7 @@
         "Canonical",
         0.9608679393910808
     ],
-    "Anna_Jakob": [
-        "Canonical",
-        0.9608679393910808
-    ],
     "Paul_Marie": [
-        "Canonical",
-        0.9305077462302156
-    ],
-    "Marie_Paul": [
         "Canonical",
         0.9305077462302156
     ],
@@ -19,15 +11,7 @@
         "Canonical",
         0.8994318425754789
     ],
-    "Maximilian_Jakob": [
-        "Canonical",
-        0.8994318425754789
-    ],
     "Maximilian_Anna": [
-        "Canonical",
-        0.8703919802887436
-    ],
-    "Anna_Maximilian": [
         "Canonical",
         0.8703919802887436
     ],
@@ -35,8 +19,24 @@
         "Canonical",
         0.7183373469195449
     ],
-    "Lena_Elias": [
+    "David_Felix": [
         "Canonical",
-        0.7183373469195449
+        0.5959710749177962
+    ],
+    "Nathaniel_Terry": [
+        "Canonical",
+        0.16620634461149084
+    ],
+    "Shanna_Jean": [
+        "Canonical",
+        0.1628961570169147
+    ],
+    "Joey_Bernard": [
+        "Canonical",
+        0.14326843211282225
+    ],
+    "Laura_Corinne": [
+        "Canonical",
+        0.14262717255093785
     ]
 }

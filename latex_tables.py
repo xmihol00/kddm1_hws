@@ -1,6 +1,38 @@
 import json
+import os
 import pandas as pd
 
+def json_to_list(data):
+    data_list = []
+    for key, value in data.items():
+        variable1, variable2 = key.split("_")
+        method, correlation = value
+        data_list.append({"Variable A": variable1, "Variable B": variable2, method: round(correlation, 3)})
+    return data_list
+
+all_data_lists = []
+
+with open("correlation/best_corr_transformations.json", "r") as f:
+    data = json.load(f)
+    for key, value in data.items():
+        variable1, variable2 = key.split("_")
+        method, correlation = value
+        all_data_lists.append({"Variable A": variable1, "Variable B": variable2, "Transformation of variable B": method, 
+                               "Pearson of Variable A and transformed Variable B": round(correlation, 3)})
+
+for file_name in [ "best_corr_canonical.json", "best_corr_distance.json", "best_corr_kendall.json", "best_corr_MIC.json", "best_corr_spearman.json"]:
+    file_name = os.path.join("correlation", file_name)
+    with open(file_name, "r") as f:
+        data = json.load(f)
+        data_list = json_to_list(data)
+        all_data_lists.extend(data_list)
+
+df = pd.DataFrame(all_data_lists)
+df_agg = df.groupby(["Variable A", "Variable B"], as_index=False).agg("first")
+
+print(df_agg.to_latex(index=False))
+
+exit()
 with open("correlation/best_corr_transformations.json") as f:
     best_correlations = json.load(f)
 
