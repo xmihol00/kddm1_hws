@@ -1,0 +1,42 @@
+{
+    "Elias_Emma": [
+        "Maximal Information Coefficient",
+        1.0000000000000002
+    ],
+    "Emma_Elias": [
+        "Maximal Information Coefficient",
+        1.0000000000000002
+    ],
+    "Jakob_Maximilian": [
+        "Maximal Information Coefficient",
+        0.9086783848007116
+    ],
+    "Maximilian_Jakob": [
+        "Maximal Information Coefficient",
+        0.9086783848007116
+    ],
+    "Marie_Paul": [
+        "Maximal Information Coefficient",
+        0.9049494207449567
+    ],
+    "Paul_Marie": [
+        "Maximal Information Coefficient",
+        0.9049494207449567
+    ],
+    "Jakob_Anna": [
+        "Maximal Information Coefficient",
+        0.8982761214501045
+    ],
+    "Anna_Jakob": [
+        "Maximal Information Coefficient",
+        0.8982761214501045
+    ],
+    "Emilia_Maximilian": [
+        "Maximal Information Coefficient",
+        0.8576509078304587
+    ],
+    "Maximilian_Emilia": [
+        "Maximal Information Coefficient",
+        0.8576509078304587
+    ]
+}
