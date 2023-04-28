@@ -127,16 +127,17 @@ if SPECIAL_CORRELATIONS:
             j = i + 1
             _, key1, correlation1 = top_20_pairs[i]
             _, key2, correlation2 = top_20_pairs[j]
-            best_names.append(key1[0])
-            best_names.append(key1[1])
-            best_pairs.append(key1)
+            if abs(correlation1) > 0.5 or abs(correlation2) > 0.5:
+                best_names.append(key1[0])
+                best_names.append(key1[1])
+                best_pairs.append(key1)
 
-            if key1 in best_correlations:
-                best_correlations_string_keys['_'.join(key1)] = (non_linear_correlation_name, correlation1)
-            elif key2 in best_correlations:
-                best_correlations_string_keys['_'.join(key2)] = (non_linear_correlation_name, correlation2)
-            else:
-                best_correlations_string_keys['_'.join(key1)] = (non_linear_correlation_name, correlation1)
+                if key1 in best_correlations:
+                    best_correlations_string_keys['_'.join(key1)] = (non_linear_correlation_name, correlation1)
+                elif key2 in best_correlations:
+                    best_correlations_string_keys['_'.join(key2)] = (non_linear_correlation_name, correlation2)
+                else:
+                    best_correlations_string_keys['_'.join(key1)] = (non_linear_correlation_name, correlation1)
 
         with open(f"correlation/best_corr_{non_linear_correlation_name.lower()}.json", 'w') as f:
             json.dump(best_correlations_string_keys, f, indent=4)
@@ -164,16 +165,17 @@ if SPECIAL_CORRELATIONS:
         j = i + 1
         _, key1, correlation1 = top_20_pairs[i]
         _, key2, correlation2 = top_20_pairs[j]
-        best_names.append(key1[0])
-        best_names.append(key1[1])
-        best_pairs.append(key1)
+        if abs(correlation1) > 0.5 or abs(correlation2) > 0.5:
+            best_names.append(key1[0])
+            best_names.append(key1[1])
+            best_pairs.append(key1)
 
-        if key1 in best_correlations:
-            best_correlations_string_keys['_'.join(key1)] = (non_linear_correlation_name, correlation1)
-        elif key2 in best_correlations:
-            best_correlations_string_keys['_'.join(key2)] = (non_linear_correlation_name, correlation2)
-        else:
-            best_correlations_string_keys['_'.join(key1)] = (non_linear_correlation_name, correlation1)
+            if key1 in best_correlations:
+                best_correlations_string_keys['_'.join(key1)] = (non_linear_correlation_name, correlation1)
+            elif key2 in best_correlations:
+                best_correlations_string_keys['_'.join(key2)] = (non_linear_correlation_name, correlation2)
+            else:
+                best_correlations_string_keys['_'.join(key1)] = (non_linear_correlation_name, correlation1)
 
     with open("correlation/best_corr_MIC.json", 'w') as f:
         json.dump(best_correlations_string_keys, f, indent=4)

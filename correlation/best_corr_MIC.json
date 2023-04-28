@@ -19,7 +19,7 @@
         "Maximal Information Coefficient",
         0.8576509078304587
     ],
-    "Maximilian_Anna": [
+    "Anna_Maximilian": [
         "Maximal Information Coefficient",
         0.7846493725258632
     ],
@@ -34,9 +34,5 @@
     "Emma_Lena": [
         "Maximal Information Coefficient",
         0.5514005383088262
-    ],
-    "Felix_David": [
-        "Maximal Information Coefficient",
-        0.3308420399131784
     ]
 }
