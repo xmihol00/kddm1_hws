@@ -49,15 +49,6 @@ def plot_kmeans_clusters_outliers(data, kmeans, outliers, ax):
     ax.legend()
 
 def find_gmm_outliers(gmm, data, percentile):
-    probabilities = gmm.predict_proba(data)
-    max_probabilities = np.max(probabilities, axis=1)
-    print(max_probabilities)
-    threshold = np.percentile(max_probabilities, percentile)
-    print(threshold)
-    outliers = np.where(max_probabilities < threshold)[0]
-    return outliers
-
-def find_gmm_outliers(gmm, data, distance_threshold):
     means = gmm.means_
     covariances = gmm.covariances_
     n_components = gmm.n_components
@@ -68,26 +59,7 @@ def find_gmm_outliers(gmm, data, distance_threshold):
         cov = covariances[k]
         mean = means[k]
         
-        # Compute Mahalanobis distance
-        cov_inv = np.linalg.pinv(cov)
-        distances = cdist(data, mean[np.newaxis, :], metric="mahalanobis", VI=cov_inv)
-        min_mahalanobis = np.minimum(min_mahalanobis, distances.ravel())
-    
-    outliers = np.where(min_mahalanobis > distance_threshold)[0]
-    return outliers
-
-def find_gmm_outliers(gmm, data, percentile):
-    means = gmm.means_
-    covariances = gmm.covariances_
-    n_components = gmm.n_components
-    
-    min_mahalanobis = np.full(data.shape[0], np.inf)
-
-    for k in range(n_components):
-        cov = covariances[k]
-        mean = means[k]
-        
-        # Compute Mahalanobis distance
+        # compute Mahalanobis distance
         cov_inv = np.linalg.pinv(cov)
         distances = cdist(data, mean[np.newaxis, :], metric="mahalanobis", VI=cov_inv)
         min_mahalanobis = np.minimum(min_mahalanobis, distances.ravel())
