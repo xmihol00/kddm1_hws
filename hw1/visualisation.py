@@ -4,7 +4,6 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.preprocessing import StandardScaler, OneHotEncoder, OrdinalEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.decomposition import PCA
-from sklearn.ensemble import RandomForestClassifier
 import matplotlib.pyplot as plt
 from scipy.stats import pointbiserialr, chi2_contingency
 import seaborn as sns
@@ -33,7 +32,7 @@ categorical_cols = nominal_categorical_cols + ordinal_categorical_cols + [binary
 
 # load the dataset without the additional header rows
 data_df = pd.read_csv("visual-dataset.csv", skiprows=range(1, 3))
-data_df[categorical_cols] = data_df[categorical_cols].astype('category')
+data_df[categorical_cols] = data_df[categorical_cols].astype("category")
 
 # preprocess the dataset, i.e. scale the continuous features and encode the categorical features
 preprocessor = ColumnTransformer(
