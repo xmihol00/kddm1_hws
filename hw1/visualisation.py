@@ -42,11 +42,17 @@ preprocessor = ColumnTransformer(
         ("cat_ord", OrdinalEncoder(), ordinal_categorical_cols)
     ])
 
+continuous_preprocessor = ColumnTransformer(
+    transformers=[
+        ("num", StandardScaler(), continuous_cols)
+    ])
+
 X = preprocessor.fit_transform(data_df.drop(binary_class_col, axis=1))
+X_continuous = continuous_preprocessor.fit_transform(data_df.drop(categorical_cols, axis=1))
 y = data_df[binary_class_col]
 
 # apply PCA, reduce to 2 dimensions
-X_pca = PCA(n_components=2).fit_transform(X)
+X_pca = PCA(n_components=2).fit_transform(X_continuous)
 
 # plot the 2D PCA results in a scatter plot as two subplots, first without class separation and then with the class labels as the color
 figure, axes = plt.subplots(1, 2, figsize=(12, 6))
@@ -69,7 +75,7 @@ plt.savefig("visualisation/pca_2D_subplots.png", dpi=500)
 plt.show()
 
 # apply PCA, reduce to 3 dimensions
-X_pca = PCA(n_components=3).fit_transform(X)
+X_pca = PCA(n_components=3).fit_transform(X_continuous)
 
 # plot the 3D PCA results in a scatter plot as two subplots, first without class separation and then with the class labels as the color
 figure, axes = plt.subplots(1, 2, figsize=(12, 6), subplot_kw={"projection": "3d"})
@@ -92,7 +98,7 @@ plt.savefig("visualisation/pca_3D_subplots.png", dpi=500)
 plt.show()
 
 # apply LDA, reduce to 1 dimension
-X_lda = LinearDiscriminantAnalysis(n_components=1).fit_transform(X, y)
+X_lda = LinearDiscriminantAnalysis(n_components=1).fit_transform(X_continuous, y)
 
 # plot the 1D LDA results in a scatter plot as two subplots, first without class separation and then with the class labels as the color
 figure, axes = plt.subplots(1, 2, figsize=(12, 4))

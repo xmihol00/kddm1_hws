@@ -1,0 +1,70 @@
+\documentclass[a4paper,10pt]{article}\setlength{\textheight}{10in}\setlength{\textwidth}{6.5in}\setlength{\topmargin}{-0.125in}\setlength{\oddsidemargin}{-.2in}\setlength{\evensidemargin}{-.2in}\setlength{\headsep}{0.2in}\setlength{\footskip}{0pt}\usepackage{amsmath}\usepackage{fancyhdr}\usepackage{enumitem}\usepackage{hyperref}\usepackage{xcolor}\usepackage{graphicx}\pagestyle{fancy}
+
+\lhead{Name: \rule{5cm}{0.5pt}}
+\chead{M.Number: \rule{2cm}{0.5pt}}
+\rhead{KDDM1 VO (INP.31101UF)}
+\fancyfoot{}
+
+\begin{document}
+\begin{enumerate}[topsep=0mm, partopsep=0mm, leftmargin=*]
+
+{\color{blue}
+\item\textit{Distance Functions}. Given the dataset ``distance-function-dataset.csv'' (available in TeachCenter), select or develop a suitable distance function to compare instances (row), based on the values of the features (columns).
+\begin{enumerate}
+	\item On what observations from the dataset do you base your decisions? (bullet points)
+	\item Would you conduct any additional feature engineering steps?
+	\item What distance function do you choose? (in case of a custom one, please provide a description/pseudocode/...)
+	\item Would the distance function depend on the succeeding processing, e.g., different function for PCA, DBSCAN, or SVM?
+\end{enumerate}
+}
+
+%%% Your answer here
+
+
+{\color{blue}
+\newpage\item\textit{Dimensionality Reduction}. Consider a dataset of 100 dimensions/features (real numbers), and the goal is to derive a 2D visualisation of the dataset. 
+\begin{enumerate}
+	\item What would be a suitable approach if the dependencies in the data are all linear?
+	\item What would be a suitable approach if there are density-based local structures in the data?
+	\item What would be a suitable approach if most of the features are Gaussain noise?
+	\item What types of noise are there and how do they affect the dimensionality reduction?
+\end{enumerate}
+}
+
+%%% Your answer here
+
+
+
+{\color{blue}
+\newpage\item \textit{Clustering}. Given the dataset ``clustering-dataset.csv'' (available in TeachCenter), which consists of observations of 5 dimensions, the goal is to find the groups of rows that form clusters.
+\begin{enumerate}
+	\item Which methods did you apply to find the clusters, and why? (bullet points)
+	\begin{itemize}
+		\item Describe pre-processing steps (if conducted)
+		\item Describe what distance measures you have chosen
+		\item Describe how you determine the number of clusters
+	\end{itemize}
+	\item What clusters did you find and how would you describe the distribution of the points within each cluster?
+	\begin{itemize}
+		\item Describe each found cluster, including shape, and amount of points within the cluster.
+	\end{itemize}
+\end{enumerate}
+}
+
+%%% Your answer here
+
+
+
+{\color{blue}
+\newpage\item\textit{Classification}. Select 3 classification algorithms of your choice that should be diverse (i.e., not based on the same underlying principles).
+\begin{enumerate}
+	\item For each algorithm list the main assumptions (e.g., on the data characteristics, types of dependencies). (bullet points) 
+	\item For each algorithm list 1-2 application scenarios, where these assumptions are being met.
+\end{enumerate}
+}
+
+%%% Your answer here
+
+
+\end{enumerate}
+\end{document}
