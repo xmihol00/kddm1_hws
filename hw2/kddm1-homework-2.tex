@@ -1,7 +1,7 @@
 \documentclass[a4paper,10pt]{article}\setlength{\textheight}{10in}\setlength{\textwidth}{6.5in}\setlength{\topmargin}{-0.125in}\setlength{\oddsidemargin}{-.2in}\setlength{\evensidemargin}{-.2in}\setlength{\headsep}{0.2in}\setlength{\footskip}{0pt}\usepackage{amsmath}\usepackage{fancyhdr}\usepackage{enumitem}\usepackage{hyperref}\usepackage{xcolor}\usepackage{graphicx}\pagestyle{fancy}
 
-\lhead{Name: \rule{5cm}{0.5pt}}
-\chead{M.Number: \rule{2cm}{0.5pt}}
+\lhead{Name: David Mihola}
+\chead{M.Number: 12211951}
 \rhead{KDDM1 VO (INP.31101UF)}
 \fancyfoot{}
 
@@ -18,8 +18,19 @@
 \end{enumerate}
 }
 
-%%% Your answer here
+I would base the decision when selecting an appropriate distance function on the following:
+\begin{itemize}
+    \item The dimensionality of the data set, i.e. how many features a sample from the data set has. The Manhattan or the Euclidean distances should be suitable for low to mid dimensional data sets. On the other hand, as suggested in \cite{distMetrics}, for data set with high number of dimensions another Minkowski distance functions with $p < 1$ may be more suitable. Distance functions may be also replaced by similarity measures, like the Cosine similarity, for high dimensional data.
+    \item The types of the features, i.e. the Manhattan distance could perform the best if the features are discrete, the Euclidean distance might be better for continuous features, whereas the Hamming distance could be preferred when comparing two binary or categorical strings. 
+    \item The ranges of values of the different features or outlying values, i.e. with increasing $p$ in the Minkowski distance functions the features with larger ranges of values (or the outlying values) tend to have the largest influence on the distance. Nevertheless, standardization or normalization can be performed most of the times, which eliminates this issue. 
+    \item The occurrence of obstacles, e.g. given two locations on the surface of the Earth, the shortest path, therefore the shortest distance, between the two locations would often be through the surface, which might be in some cases, like driving a car, unacceptable. 
+\end{itemize}
 
+Feature engineering is for this data set at the very least necessary regarding the \textit{Date} feature, when any distance function operating on vectors of real values, such as the Euclidean distance, shall be used. The dates must be converted from their textual representation to numeric. Luckily, the \textit{Date} feature can be well viewed as a continuous feature, since there are samples from subsequent days, and another specific feature engineering of this feature is not necessary. Standardization or normalization might be on the other hand necessary or at least desirable, as e.g. the ranges of values between the \textit{Wind Speed} and \textit{Traffic} features are radically different. I would personally standardize all the features to a range between 0 and 1, so they all have the same influence on the resulting distance. Although, a domain expert might argue this decision with some additional knowledge, which may suggest that some features are more important to the overall distance. Subsequently, different features might be standardized to different ranges. Lastly, I would not remove or merge any features. The only candidates for removal might be the \textit{Date} and \textit{Precipitation} features. But based upon my limited domain knowledge I suggest that both the date, e.g. working day, weekend or national holiday, and the precipitation, e.g. no rain or heavy rain, could have a large impact on or even be a cause of some of the other features.
+
+As the data set with its 7 features is still low dimensional, all the features are continuous and can be standardize, I choose the Euclidean distance.
+
+Yes, the chosen distance function may depend on the used succeeding algorithm. As far as I know, the PCA does not use any distance function, so there the choice is irrelevant. If, on the other hand, the PCA shall be computed on e.g. the pair-wise distances between the samples, then the chosen function may depend on what we want to achieve by this computation. Regarding the DBSCAN, being a density based clustering algorithm, the distance function could influence the results other than expected in a situation where the distance between samples does not reflect the density, although it is hard to imagine this situation if even possible\footnote{I am not sure if distance directly defines density or vice versa and I could not find anything explaining it online. A short clarification would be welcomed.}. Lastly, later processing the data with SVMs, or any other algorithm that often projects the input data into higher dimensional space, might require distance functions (or similarity measures converted to distance functions, e.g. $1 - cosine\_similarity(\cdot, \cdot)$) behaving well in high dimensional space, as discussed in the listing above.    
 
 {\color{blue}
 \newpage\item\textit{Dimensionality Reduction}. Consider a dataset of 100 dimensions/features (real numbers), and the goal is to derive a 2D visualisation of the dataset. 
@@ -31,9 +42,20 @@
 \end{enumerate}
 }
 
-%%% Your answer here
+First idea on how to visualise a linearly dependant data set might be to plot a heat map of an appropriate number of the most correlated features. Since the question is targeted on dimensionality reduction, the more obvious answer is to apply PCA, on the data set and plot the 2 largest principal components. The data set should be also normalized or standardized prior the PCA computation. Other dimensionality reducing algorithms may be used as well, but we have to make sure to verify that they are supposed to be applied on data with linear dependencies. An example of an algorithm, which might be use incorrectly in this case, is t-SNE. This algorithm is design for non-linearly dependant data.
 
+The most suitable approach for visualising a data set with density-based local structures might be to use clustering and visualise only the clusters in 2D. It is important to notice, that selecting an appropriate clustering algorithm based on the types of the structures is desirable, e.g. K-means for not overlapping Gaussian-like structures, GMMs for overlapping Gaussian-like structures or DBSCAN for non-Gaussian structures etc.
 
+First, if the other actual features follow non-Gaussian distributions, it is possible to detect the Gaussian noise, e.g. simply by plotting histograms and finding bell-shaped curves or in more complex way by performing hypothesis testing. The detected noisy features can be then removed prior the intended dimensionality reduction/visualisation technique. Second, an algorithm robust to such a type of noise in a data set could be used, although most algorithms are usually design to be robust to outliers/noise on the sample basis (noisy row) not on a feature basis (noisy column). Lastly, PCA could be used directly on the noisy data, since if a feature is purely Gaussian noise, it might have only a small impact on the principal components capturing the most variation in the data.
+
+The types of noise, which can be encountered in a data set, and their possible affects on dimensionality reduction are the following:
+\begin{itemize}
+    \item \textbf{Gaussian noise} can introduce random variations to the data, which may consequently cause less accurate results of a used dimensionality reduction algorithms. Some algorithms or modifications to already well know algorithms, such as PCA, can be used to deal with this kind of noise as described in \cite{bailey2012}.
+    \item \textbf{White noise} in other words uniformly distributed noise can increase the variance within a data set. Therefore, it may in case of PCA dominate the principal components or affect their rankings. 
+    \item \textbf{Outliers} can be detrimental to algorithms, which aim to maximize variance, such as PCA. Outlier by their definition are extreme values at the edge of a distribution. Meaning that they will dominate the variance and consequently skew the results of such an algorithm. Again, there exist algorithms, which are more robust to outliers, like Isomap or t-SNE.
+    \item \textbf{Missing data} can potentially cause the results of a dimensionality reduction algorithm to be NaN, i.e. if there is just a single NaN value and the IEEE 754 standard for representing floating point numbers is used, all the arithmetic expression containing this value will result to NaN as well. Of course, there are techniques how to deal with such values, as simple as removing the whole samples containing NaN values, or more advanced like missing value imputation. Algorithms robust to missing values are also available such as 
+    \item \textbf{Measurement noise} 
+\end{itemize}
 
 {\color{blue}
 \newpage\item \textit{Clustering}. Given the dataset ``clustering-dataset.csv'' (available in TeachCenter), which consists of observations of 5 dimensions, the goal is to find the groups of rows that form clusters.
@@ -67,4 +89,7 @@
 
 
 \end{enumerate}
+\newpage
+\bibliographystyle{plain}
+\bibliography{references}
 \end{document}
